@@ -7,45 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const integrationInput = document.getElementById('integration');
     const totalPriceDisplay = document.getElementById('total-price');
 
-    // --- Configuración de Precios (Ajusta estos valores) ---
-    const BASE_PRICE_PER_MODEL = 250; // Precio base por modelo simple en USD
-    const INTEGRATION_FEE = 300; // Costo fijo por integración API
 
-    // Función de cálculo
-    function calculatePrice() {
-        // 1. Obtener valores
-        let quantity = parseInt(quantityInput.value);
-        let complexityMultiplier = parseFloat(complexityInput.value);
-        let hasIntegration = integrationInput.checked;
-
-        // 2. Lógica de descuento por volumen
-        // Si piden más modelos, el precio unitario baja.
-        let volumeDiscount = 1;
-        if (quantity >= 5) volumeDiscount = 0.90; // 10% descuento
-        if (quantity >= 10) volumeDiscount = 0.85; // 15% descuento
-        if (quantity >= 20) volumeDiscount = 0.75; // 25% descuento
-
-        // 3. Cálculo matemático
-        let unitPrice = BASE_PRICE_PER_MODEL * complexityMultiplier * volumeDiscount;
-        let subtotal = unitPrice * quantity;
-
-        if (hasIntegration) {
-            subtotal += INTEGRATION_FEE;
-        }
-
-        // 4. Actualizar la interfaz
-        // Formatear número con comas si es necesario
-        totalPriceDisplay.textContent = Math.round(subtotal).toLocaleString('en-US');
-
-        // Actualizar etiqueta de cantidad
-        quantityVal.textContent = quantity + (quantity === 1 ? ' modelo' : ' modelos');
-    }
-
-    // --- Event Listeners ---
-    // Escuchar cambios en cualquier input para recalcular en tiempo real
-    quantityInput.addEventListener('input', calculatePrice);
-    complexityInput.addEventListener('change', calculatePrice);
-    integrationInput.addEventListener('change', calculatePrice);
 
     // --- Smooth Scroll para la navegación ---
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -56,9 +18,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     });
-
-    // Calcular precio inicial al cargar
-    calculatePrice();
 
     // --- Lógica del Formulario de Contacto ---
     const contactForm = document.getElementById('contact-form');
@@ -84,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.disabled = true;
 
             const serviceID = 'service_svnl2dt'; // O tu Service ID específico (ej: service_z87xs)
-            const templateID = 'service_svnl2dt'; // REEMPLAZA con tu ID de plantilla de EmailJS
+            const templateID = 'template_39c1tvz'; // REEMPLAZA con tu ID de plantilla de EmailJS
 
             // 2. Enviamos el formulario usando la librería
             emailjs.sendForm(serviceID, templateID, this)
