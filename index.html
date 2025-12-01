@@ -54,6 +54,7 @@
             width: 100%;  /* Llena el contenedor de 500px */
             height: 100%; /* Llena el contenedor de 500px */
             transition: opacity 0.5s ease-in-out;
+            /*zoom: 25%;*/
         }
 
         /* 5. SPINNER DE CARGA */
@@ -214,6 +215,15 @@
                     companyName: "Configura3D",
                     productName: modelName,
                     productVersion: "1",
+                    // --- NUEVAS LÍNEAS AGREGADAS ---
+                    devicePixelRatio: 2, // Fuerza la resolución interna al doble del tamaño CSS
+                    matchWebGLToCanvasSize: true, // Desactiva el auto-ajuste por defecto de Unity (opcional, pero recomendado si forzamos DPI)
+                    webglContextAttributes: {
+                        preserveDrawingBuffer: true, // Útil para tus capturas de pantalla
+                        antialias: true,            // Solicita al navegador activar MSAA
+                        powerPreference: "high-performance" // Solicita usar la GPU dedicada si existe
+                    },
+                    // -------------------------------
                 }).then(OnUnityLoaded).catch((message) => {
                     alert(message);
                 });
