@@ -64,23 +64,49 @@ document.addEventListener('DOMContentLoaded', () => {
     const contactForm = document.getElementById('contact-form');
 
     if(contactForm) {
-        contactForm.addEventListener('submit', function(e) {
-            e.preventDefault(); // Evita que la página se recargue
+        const form = document.getElementById('contactForm');
+        const button = document.getElementById('submitBtn');
 
-            // Aquí normalmente enviarías los datos a un servidor
-            // Simulamos el envío con un tiempo de espera
-            const btn = this.querySelector('button');
-            const originalText = btn.innerText;
-            
-            btn.innerText = 'Enviando...';
-            btn.disabled = true;
+        form.addEventListener('submit', function(e) {
+            e.preventDefault(); // 1. Evita que la página se recargue
 
-            setTimeout(() => {
-                alert('¡Mensaje enviado con éxito! Nos pondremos en contacto contigo en breve.');
-                contactForm.reset(); // Limpia el formulario
-                btn.innerText = originalText;
-                btn.disabled = false;
-            }, 1500);
+            const originalBtnText = button.innerText;
+            button.innerText = "Enviando..."; // Feedback inmediato
+            button.disabled = true; // Evita doble clic
+
+            // Recolectamos los datos del formulario
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            // 2. Enviamos los datos usando Fetch (AJAX)
+            fetch("https://formsubmit.co/ajax/configura3d@gmail.com", {
+                method: "POST",
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                // 3. Si se envió correctamente:
+                button.innerText = "¡Gracias!";
+                form.reset(); // Opcional: limpia los campos del formulario
+
+                // 4. Esperamos 3 segundos (3000 ms) y volvemos a la normalidad
+                setTimeout(() => {
+                    button.innerText = originalBtnText;
+                    button.disabled = false;
+                }, 3000);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                button.innerText = "Hubo un error";
+                setTimeout(() => {
+                    button.innerText = originalBtnText;
+                    button.disabled = false;
+                }, 3000);
+            });
         });
     }
 });
