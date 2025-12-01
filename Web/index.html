@@ -1,150 +1,137 @@
 <!DOCTYPE html>
 <html lang="es">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Configura3D Pro | Soluciones de Visualización Interactiva</title>
-        <link rel="stylesheet" href="styles.css">
-        <link
-            href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap"
-            rel="stylesheet">
-    </head>
-    <body>
 
-        <nav class="navbar">
-            <div class="container nav-container">
-                <a href="#" class="logo">Configura<span
-                        class="accent">3D</span></a>
-                <ul class="nav-links">
-                    <li><a href="#features">Servicios</a></li>
-                    <li><a href="#demo">Demo</a></li>
-                    <li><a href="#contact" class="btn-nav">Contactar</a></li>
-                </ul>
-                <div class="menu-toggle" id="mobile-menu">
-                    <span class="bar"></span>
-                    <span class="bar"></span>
-                    <span class="bar"></span>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configura3D Pro | Soluciones de Visualización Interactiva</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="#" class="logo">Configura<span class="accent">3D</span></a>
+            <ul class="nav-links">
+                <li><a href="#features">Servicios</a></li>
+                <li><a href="#demo">Demo</a></li>
+                <li><a href="#contact" class="btn-nav">Contactar</a></li>
+            </ul>
+            <div class="menu-toggle" id="mobile-menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="container hero-content">
+            <h1>Tus productos, <br>ahora en <span class="gradient-text">3D
+                    Interactivo</span>.</h1>
+            <p>Desarrollamos configuradores 3D web de alto rendimiento para
+                e-commerce. Permite que tus clientes personalicen muebles,
+                sillas y productos complejos en tiempo real.</p>
+            <div class="hero-buttons">
+                <a href="#demo" class="btn btn-outline">Ver Demo</a>
+            </div>
+        </div>
+    </header>
+
+    <section id="features" class="section">
+        <div class="container">
+            <h2 class="section-title">¿Por qué usar un Configurado 3D?</h2>
+            <div class="grid-3">
+                <div class="card">
+                    <div class="icon">🚀</div>
+                    <h3>Aumento de Conversión</h3>
+                    <p>Los usuarios que interactúan con productos 3D tienen
+                        un 40% más de probabilidad de compra.</p>
+                </div>
+                <div class="card">
+                    <div class="icon">🎨</div>
+                    <h3>Personalización Real</h3>
+                    <p>Cambio de texturas, materiales y componentes en
+                        tiempo real usando WebGL.</p>
+                </div>
+                <div class="card">
+                    <div class="icon">📱</div>
+                    <h3>Multiplataforma</h3>
+                    <p>Funciona en móviles, tablets y escritorio sin
+                        instalar ninguna aplicación.</p>
                 </div>
             </div>
-        </nav>
+        </div>
+    </section>
 
-        <header class="hero">
-            <div class="container hero-content">
-                <h1>Tus productos, <br>ahora en <span class="gradient-text">3D
-                        Interactivo</span>.</h1>
-                <p>Desarrollamos configuradores 3D web de alto rendimiento para
-                    e-commerce. Permite que tus clientes personalicen muebles,
-                    sillas y productos complejos en tiempo real.</p>
-                <div class="hero-buttons">
-                    <a href="#demo" class="btn btn-outline">Ver Demo</a>
+    <section id="demo" class="section bg-dark">
+        <div class="container">
+            <h2 class="section-title light-text">Experiencia Inmersiva</h2>
+            <div class="demo-wrapper">
+                <div class="demo-placeholder">
+                    <iframe src="https://gabriel98pc.github.io/ModelViewerConfiguratorUnity/" width="700" height="700"
+                        style="border: 2px solid #333; border-radius: 10px;">
+                    </iframe>
+
                 </div>
             </div>
-        </header>
+        </div>
+    </section>
 
-        <section id="features" class="section">
-            <div class="container">
-                <h2 class="section-title">¿Por qué usar un Configurado 3D?</h2>
-                <div class="grid-3">
-                    <div class="card">
-                        <div class="icon">🚀</div>
-                        <h3>Aumento de Conversión</h3>
-                        <p>Los usuarios que interactúan con productos 3D tienen
-                            un 40% más de probabilidad de compra.</p>
+    <section id="contact" class="section">
+        <div class="container">
+            <h2 class="section-title">Hablemos de tu Proyecto</h2>
+            <p class="section-subtitle">Déjanos tus datos y te enviaremos
+                una propuesta personalizada para tu configurador 3D.</p>
+
+            <div class="contact-wrapper">
+                <form id="contact-form" class="contact-form">
+                    <div class="form-group">
+                        <label for="user_name">Nombre / Empresa</label>
+                        <input type="text" id="user_name" name="user_name" placeholder="Ej: Muebles Modernos S.A."
+                            required>
                     </div>
-                    <div class="card">
-                        <div class="icon">🎨</div>
-                        <h3>Personalización Real</h3>
-                        <p>Cambio de texturas, materiales y componentes en
-                            tiempo real usando WebGL.</p>
+
+                    <div class="form-group">
+                        <label for="user_email">Correo Electrónico</label>
+                        <input type="email" id="user_email" name="user_email" placeholder="contacto@tuempresa.com"
+                            required>
                     </div>
-                    <div class="card">
-                        <div class="icon">📱</div>
-                        <h3>Multiplataforma</h3>
-                        <p>Funciona en móviles, tablets y escritorio sin
-                            instalar ninguna aplicación.</p>
+
+                    <div class="form-group">
+                        <label for="message">Detalles del Requerimiento</label>
+                        <textarea id="message" name="message" rows="5" placeholder="Cuéntanos..." required></textarea>
                     </div>
-                </div>
-            </div>
-        </section>
 
-        <section id="demo" class="section bg-dark">
-            <div class="container">
-                <h2 class="section-title light-text">Experiencia Inmersiva</h2>
-                <div class="demo-wrapper">
-                    <div class="demo-placeholder">
-                        <iframe
-                            src="https://gabriel98pc.github.io/ModelViewerConfiguratorUnity/"
-                            width="700"
-                            height="700"
-                            style="border: 2px solid #333; border-radius: 10px;">
-                        </iframe>
+                    <button type="submit" id="btn-submit" class="btn btn-primary full-width">Enviar Mensaje</button>
+                </form>
 
+                <div class="contact-info">
+                    <div class="info-item">
+                        <h4>📧 Email Directo</h4>
+                        <p>configura3d@gmail.com</p>
                     </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="contact" class="section">
-            <div class="container">
-                <h2 class="section-title">Hablemos de tu Proyecto</h2>
-                <p class="section-subtitle">Déjanos tus datos y te enviaremos
-                    una propuesta personalizada para tu configurador 3D.</p>
-
-                <div class="contact-wrapper">
-                    <form action="https://formsubmit.co/088d404c7877a94232bbd495c1d17767"
-                        method="POST" class="contact-form" id="contactForm">
-                        <input type="hidden" name="_subject"
-                            value="Nuevo Lead de Configura3D!">
-                        <input type="hidden" name="_captcha" value="false">
-
-                        <div class="form-group">
-                            <label for="name">Nombre / Empresa</label>
-                            <input type="text" id="name" name="name"
-                                placeholder="Ej: Muebles Modernos S.A."
-                                required>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="email">Correo Electrónico</label>
-                            <input type="email" id="email" name="email"
-                                placeholder="contacto@tuempresa.com" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="message">Detalles del
-                                Requerimiento</label>
-                            <textarea id="message" name="message" rows="5"
-                                placeholder="Cuéntanos qué productos quieres visualizar en 3D..."
-                                required></textarea>
-                        </div>
-
-                        <button type="submit" id="submitBtn"
-                            class="btn btn-primary full-width">Enviar
-                            Mensaje</button>
-                    </form>
-
-                    <div class="contact-info">
-                        <div class="info-item">
-                            <h4>📧 Email Directo</h4>
-                            <p>configura3d@gmail.com</p>
-                        </div>
-                        <div class="info-item">
-                            <h4>📍 Ubicación</h4>
-                            <p>Buenos Aires, Argentina (Trabajamos Global)</p>
-                        </div>
+                    <div class="info-item">
+                        <h4>📍 Ubicación</h4>
+                        <p>Buenos Aires, Argentina (Trabajamos Global)</p>
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <footer>
-            <div class="container footer-content">
-                <p>&copy; 2025 Configura3D Pro. Todos los derechos
-                    reservados.</p>
-                <p>Especialistas en WebGL y Renderizado en Tiempo Real.</p>
-            </div>
-        </footer>
+    <footer>
+        <div class="container footer-content">
+            <p>&copy; 2025 Configura3D Pro. Todos los derechos
+                reservados.</p>
+            <p>Especialistas en WebGL y Renderizado en Tiempo Real.</p>
+        </div>
+    </footer>
 
-        <script src="script.js"></script>
-    </body>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script src="script.js"></script>
+</body>
+
 </html>

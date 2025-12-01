@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    
+
     // --- Referencias al DOM ---
     const quantityInput = document.getElementById('quantity');
     const quantityVal = document.getElementById('quantity-val');
@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 2. Lógica de descuento por volumen
         // Si piden más modelos, el precio unitario baja.
-        let volumeDiscount = 1; 
+        let volumeDiscount = 1;
         if (quantity >= 5) volumeDiscount = 0.90; // 10% descuento
         if (quantity >= 10) volumeDiscount = 0.85; // 15% descuento
         if (quantity >= 20) volumeDiscount = 0.75; // 25% descuento
@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // 4. Actualizar la interfaz
         // Formatear número con comas si es necesario
         totalPriceDisplay.textContent = Math.round(subtotal).toLocaleString('en-US');
-        
+
         // Actualizar etiqueta de cantidad
         quantityVal.textContent = quantity + (quantity === 1 ? ' modelo' : ' modelos');
     }
@@ -63,50 +63,51 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Lógica del Formulario de Contacto ---
     const contactForm = document.getElementById('contact-form');
 
-    if(contactForm) {
-        const form = document.getElementById('contactForm');
-        const button = document.getElementById('submitBtn');
+    if (contactForm) {
 
-        form.addEventListener('submit', function(e) {
-            e.preventDefault(); // 1. Evita que la página se recargue
+        console.log('Cargado');
 
-            const originalBtnText = button.innerText;
-            button.innerText = "Enviando..."; // Feedback inmediato
-            button.disabled = true; // Evita doble clic
+        // A. Inicializamos EmailJS con tu Public Key
+        // REEMPLAZA "TU_PUBLIC_KEY" con la que obtuviste en el dashboard de EmailJS
+        (function () {
+            emailjs.init("T3HxKzEZO1D0BXarS");
+        })();
 
-            // Recolectamos los datos del formulario
-            const formData = new FormData(form);
-            const data = Object.fromEntries(formData.entries());
+        const btn = document.getElementById('btn-submit');
 
-            // 2. Enviamos los datos usando Fetch (AJAX)
-            fetch("https://formsubmit.co/ajax/configura3d@gmail.com", {
-                method: "POST",
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify(data)
-            })
-            .then(response => response.json())
-            .then(data => {
-                // 3. Si se envió correctamente:
-                button.innerText = "¡Gracias!";
-                form.reset(); // Opcional: limpia los campos del formulario
+        document.getElementById('contact-form').addEventListener('submit', function (event) {
+            event.preventDefault(); // Evita recargar la página
 
-                // 4. Esperamos 3 segundos (3000 ms) y volvemos a la normalidad
-                setTimeout(() => {
-                    button.innerText = originalBtnText;
-                    button.disabled = false;
-                }, 3000);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                button.innerText = "Hubo un error";
-                setTimeout(() => {
-                    button.innerText = originalBtnText;
-                    button.disabled = false;
-                }, 3000);
-            });
+            // 1. Cambiamos estado del botón a "Enviando..."
+            const originalText = btn.innerText;
+            btn.innerText = 'Enviando...';
+            btn.disabled = true;
+
+            const serviceID = 'service_svnl2dt'; // O tu Service ID específico (ej: service_z87xs)
+            const templateID = 'service_svnl2dt'; // REEMPLAZA con tu ID de plantilla de EmailJS
+
+            // 2. Enviamos el formulario usando la librería
+            emailjs.sendForm(serviceID, templateID, this)
+                .then(() => {
+                    // 3. ÉXITO
+                    btn.innerText = '¡Gracias!';
+                    document.getElementById('contact-form').reset(); // Limpia el formulario
+
+                    // Volver a la normalidad en 3 segundos
+                    setTimeout(() => {
+                        btn.innerText = originalText;
+                        btn.disabled = false;
+                    }, 3000);
+                }, (err) => {
+                    // 4. ERROR
+                    btn.innerText = 'Error al enviar';
+                    console.error('FAILED...', err);
+
+                    setTimeout(() => {
+                        btn.innerText = originalText;
+                        btn.disabled = false;
+                    }, 3000);
+                });
         });
     }
 });
