@@ -151,14 +151,30 @@
             </div>
 
             <div id="buttons-container">
-                <button onclick="CreateInstance(0)">Model 1</button>
-                <button onclick="CreateInstance(1)">Model 2</button>
-                <button onclick="CreateInstance(2)">Model 3</button>
-                <button onclick="CreateInstance(3)">Model 4</button>
-                <button onclick="CreateInstance(4)">Model 5</button>
-                <button onclick="CreateInstance(5)">Model 6</button>
-                <button onclick="CreateInstance(6)">Model 7</button>
-                <button onclick="CreateInstance(7)">Model 8</button>
+                <button onclick="CreateInstance(0)">1</button>
+                <button onclick="CreateInstance(1)">2</button>
+                <button onclick="CreateInstance(2)">3</button>
+                <button onclick="CreateInstance(3)">4</button>
+                <button onclick="CreateInstance(4)">5</button>
+                <button onclick="CreateInstance(5)">6</button>
+                <button onclick="CreateInstance(6)">7</button>
+                <button onclick="CreateInstance(7)">8</button>
+                <button onclick="CreateInstance(8)">9</button>
+                <button onclick="CreateInstance(9)">10</button>
+                <button onclick="CreateInstance(10)">11</button>
+                <button onclick="CreateInstance(11)">12</button>
+                <button onclick="CreateInstance(12)">13</button>
+                <button onclick="CreateInstance(13)">14</button>
+                <button onclick="CreateInstance(14)">15</button>
+                <button onclick="CreateInstance(15)">16</button>
+                <button onclick="CreateInstance(16)">17</button>
+                <button onclick="CreateInstance(17)">18</button>
+                <button onclick="CreateInstance(18)">19</button>
+                <button onclick="CreateInstance(19)">20</button>
+                <button onclick="CreateInstance(20)">21</button>
+                <button onclick="CreateInstance(21)">22</button>
+                <button onclick="CreateInstance(22)">23</button>
+                <button onclick="CreateInstance(23)">24</button>
             </div>
 
         </div>
@@ -178,7 +194,8 @@
             setTimeout(createFirstInstance, 1000);
 
             function createFirstInstance() {
-                CreateInstance(0);
+                let instanceId = Math.floor(Math.random() * 24);
+                CreateInstance(instanceId);
             }
 
             let spinner = document.getElementById("loading-spinner");
