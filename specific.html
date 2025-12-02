@@ -1,0 +1,386 @@
+<!--This html document will represent a single product-->
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title>Configurator | Kala</title>
+        <script src="Build/Model_0/Build.loader.js"></script><!--The Unity build loader of the current product-->
+        <script src="Js/JsUtils.js"></script>
+
+        <style>
+        /* 1. LAYOUT GENERAL */
+        body {
+            margin: 0;
+            background-color: #1a1a1a;
+            color: white;
+            font-family: Arial, sans-serif;
+            
+            /* Centrado perfecto en pantalla */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* 2. WRAPPER PRINCIPAL */
+        .viewer-wrapper {
+            display: flex;
+            flex-direction: column; /* Apila verticalmente */
+            align-items: center;    /* Centra horizontalmente */
+            gap: 15px;              /* Espacio entre canvas y botones */
+        }
+
+        /* 3. CONTENEDOR DEL CANVAS (TAMAÑO FIJO OBLIGATORIO) */
+        .canvas-container {
+            position: relative;     /* Para centrar el spinner */
+            
+            /* FORZAMOS EL TAMAÑO AQUÍ PARA QUE NO SE ENCOJA */
+            width: 500px;           
+            height: 500px;
+            
+            border-radius: 20px;    /* Bordes redondeados */
+            overflow: hidden;       /* Recorta las esquinas del canvas */
+            background-color: #000; /* Fondo negro de carga */
+            
+            /* Sombra externa opcional (puedes quitarla si quieres diseño plano) */
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+            
+            /* HE ELIMINADO EL ::after (EL DIFUMINADO) */
+        }
+
+        /* 4. CANVAS */
+        #unity-canvas {
+            display: block;
+            width: 100%;  /* Llena el contenedor de 500px */
+            height: 100%; /* Llena el contenedor de 500px */
+            transition: opacity 0.5s ease-in-out;
+            /*zoom: 25%;*/
+        }
+
+        /* 5. SPINNER DE CARGA */
+        #loading-spinner {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 255, 255, 0.1);
+            border-top: 5px solid #ffffff;
+            border-radius: 50%;
+            
+            animation: spin 1s linear infinite;
+            z-index: 10;
+            display: none;
+        }
+
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        /* 6. BOTONES */
+        #buttons-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            
+            /* Hacemos que la botonera mida lo mismo que el canvas */
+            width: 500px; 
+        }
+
+        button {
+            padding: 10px 15px;
+            cursor: pointer;
+            background-color: #333;
+            color: #ddd;
+            border: 1px solid #444;
+            border-radius: 6px;
+            font-size: 14px;
+            flex-grow: 1;
+        }
+        
+        button:hover {
+            background-color: #555;
+            color: white;
+        }
+
+        /* REGLAS PARA FULL SCREEN */
+        .canvas-container:fullscreen {
+            width: 100vw !important;  /* Ancho total de la ventana */
+            height: 100vh !important; /* Alto total de la ventana */
+            
+            /* Quitamos bordes y fondos negros para que sea limpio */
+            border-radius: 0 !important; 
+            background-color: black;
+            
+            /* IMPORTANTE: Quitamos flexbox aquí para dejar que el canvas fluya libre */
+            display: block; 
+            margin: 0;
+            padding: 0;
+            box-shadow: none;
+        }
+
+        /* Regla para Webkit (Chrome/Safari) */
+        .canvas-container:-webkit-full-screen {
+            width: 100vw !important;
+            height: 100vh !important;
+            border-radius: 0 !important;
+            background-color: black;
+            display: block;
+            margin: 0;
+            padding: 0;
+            box-shadow: none;
+        }
+    </style>
+    </head>
+
+    <body>
+
+        <div id="viewer-wrapper">
+
+            <div class="canvas-container">
+                <div id="loading-spinner"></div>
+
+                <!--The Unity WebGL Canvas-->
+                <canvas id="unity-canvas"
+                    style="background: #231F20; width: 500px; height: 500px;">
+                </canvas>
+            </div>
+        </div>
+        
+
+        <!--Unity WebGL Instance Logic-->
+        <script>
+
+            //Unity instance global variable
+            let CurrentUnityInstance;
+
+            let isInFullScreen = false;
+
+            let UnityCanvas = document.getElementById("unity-canvas");
+
+            //Wait a second to create a unity instance
+            setTimeout(createFirstInstance, 1000);
+
+            function createFirstInstance() {
+                // 1. Obtener la cadena de consulta (query string) de la URL actual
+                const queryString = window.location.search;
+
+                // 2. Crear un objeto URLSearchParams
+                const urlParams = new URLSearchParams(queryString);
+
+                // 3. Obtener el valor del parámetro deseado (ej: 'id')
+                // Esto devuelve una cadena de texto (string) o null si no existe
+                const valorParametro = urlParams.get('id');
+
+                // 4. Convertir a Entero y Validar
+                if (valorParametro) {
+                    // El '10' indica que es base decimal
+                    const instanceId = parseInt(valorParametro, 10); 
+
+                    // Verificar que la conversión fue exitosa (que sea un número real)
+                    if (!isNaN(instanceId)) {
+                        console.log("El numero es:", instanceId);
+                        
+                        CreateInstance(instanceId);
+                        
+                    } else {
+                        console.log("El parámetro no es un número válido.");
+                    }
+                } else {
+                    console.log("El parámetro no existe en la URL.");
+                }
+
+                
+            }
+
+            let spinner = document.getElementById("loading-spinner");
+
+            async function CreateInstance(modelIndex) {
+
+                // 1. LÓGICA DE DESCARGA DE MEMORIA
+                if (CurrentUnityInstance != null) {
+                    console.log("Descargando instancia anterior...");
+                    try {
+                        // Quit() devuelve una promesa, debemos esperar a que termine
+                        await CurrentUnityInstance.Quit();
+                        CurrentUnityInstance = null;
+                        console.log("Instancia descargada correctamente.");
+                    } catch (error) {
+                        console.error("Error al cerrar la instancia de Unity:", error);
+                        // A veces Quit() falla si el contexto ya se perdió, forzamos null
+                        CurrentUnityInstance = null;
+                    }
+                }
+
+                UnityCanvas.style.opacity = 0;
+                spinner.style.display = "block";
+
+                let modelName = "Model_" + modelIndex;
+                console.log("Cargando: " + modelName);
+
+                //This "createUnityInstance" call, will load a specific unity webgl build
+                createUnityInstance(document.querySelector("#unity-canvas"), {
+                    dataUrl: "Build/" + modelName + "/Build.data.unityweb",
+                    frameworkUrl: "Build/" + modelName + "/Build.framework.js.unityweb",
+                    codeUrl: "Build/" + modelName + "/Build.wasm.unityweb",
+                    streamingAssetsUrl: "StreamingAssets",
+                    companyName: "Configura3D",
+                    productName: modelName,
+                    productVersion: "1",
+                    // --- NUEVAS LÍNEAS AGREGADAS ---
+                    devicePixelRatio: 2, // Fuerza la resolución interna al doble del tamaño CSS
+                    matchWebGLToCanvasSize: true, // Desactiva el auto-ajuste por defecto de Unity (opcional, pero recomendado si forzamos DPI)
+                    webglContextAttributes: {
+                        preserveDrawingBuffer: true, // Útil para tus capturas de pantalla
+                        antialias: true,            // Solicita al navegador activar MSAA
+                        powerPreference: "high-performance" // Solicita usar la GPU dedicada si existe
+                    },
+                    // -------------------------------
+                }).then(OnUnityLoaded).catch((message) => {
+                    alert(message);
+                });
+            }
+
+            //Dont delete this function
+            function OnUnityLoaded(UnityInstance) {
+
+                //Saving the unity instance as a global variable
+                CurrentUnityInstance = UnityInstance;
+
+                setTimeout(function() {
+                    // Opción A: Si quieres que sea transparente (para ver el fondo de Unity)
+                    UnityCanvas.style.opacity = 1;
+                    spinner.style.display = "none";
+                    // Opción B: Si quieres que vuelva al gris oscuro original de tu HTML
+                    // UnityCanvas.style.background = "#231F20"; 
+
+                }, 2000); // 1000 milisegundos = 1 segundo
+
+                //If this page is running in a mobile device, the unity instance will be configured to support touch controls
+                if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+                    setTimeout(SetMobileMode, 3000);
+                }
+            }
+
+            //Dont delete this function
+            function SetMobileMode() {
+                CurrentUnityInstance.SendMessage('CameraController', 'SetMobileMode', 1);
+            }
+
+            //Tis function will load a json based on the objectID (Json of a part of the product)
+            //and the Material ID as the index of the texture and material settings to apply to that product part,
+            //after that the json data will be sent to unity instance.
+            function SetMaterial(objectId, MaterialId)
+            {
+                readJsonFile(jsonsOfTheCurrentProductParts[objectId])
+                        .then(jsonData => {
+                            let textureIndex = MaterialId;
+
+                            jsonData.selectedTextureIndex = textureIndex;
+
+                            let jsonString = JSON.stringify(jsonData);
+
+                            CurrentUnityInstance.SendMessage('MaterialsManager', 'ApplyMaterialByIndex', jsonString);
+                        });
+            }
+
+            //Dont delete this function
+            function OnObjectSelected(objectId) {
+                //Handle object selection (When a part of the model is selected in unity panel) 
+            }
+            
+            //Dont delete this function
+            function OnRequestForCurrentMaterialsDataResponse(json){                
+                //Handle QR Data for AR
+            }
+
+        </script>
+
+        <!--Screenshot Logic-->
+        <script>
+            function ScreenShot() {
+                CurrentUnityInstance.SendMessage('ImageManager', 'Screenshot');
+            }
+
+            function ShowImage(imageUrl)//Download the capture from unity webgl
+            {
+                var link = document.createElement('a');
+                link.href = imageUrl;
+                link.download = 'Capture.jpg';
+                link.style.display = 'none';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        </script>
+
+        <!--Full Screen Logic-->
+        <script>
+            // Referencia al contenedor, no solo al canvas
+        const container = document.querySelector(".canvas-container");
+
+        function FullScreen() {
+            if (!document.fullscreenElement) {
+                // Entrar en Fullscreen: Solicitamos sobre el CONTAINER
+                if (container.requestFullscreen) {
+                    container.requestFullscreen();
+                } else if (container.webkitRequestFullscreen) { /* Safari */
+                    container.webkitRequestFullscreen();
+                } else if (container.msRequestFullscreen) { /* IE11 */
+                    container.msRequestFullscreen();
+                }
+            } else {
+                // Salir de Fullscreen
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) { /* Safari */
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) { /* IE11 */
+                    document.msExitFullscreen();
+                }
+            }
+        }
+
+        // Detectar el cambio para avisar a Unity y AJUSTAR TAMAÑO
+        document.addEventListener("fullscreenchange", function () {
+            
+            if (document.fullscreenElement) {
+                // --- MODO FULLSCREEN ACTIVADO ---
+                console.log("Entrando a FullScreen");
+                isInFullScreen = true;
+
+                // 1. Avisamos a Unity para que cambie sus iconos
+                if(CurrentUnityInstance) {
+                    CurrentUnityInstance.SendMessage('FullScreenIconManager', 'SetSpriteByIndex', 1);
+                    CurrentUnityInstance.SendMessage('FullScreenManager', 'SetInFullScreenMode', 1);
+                }
+
+                // 2. TRUCO CLAVE: Forzamos al canvas a entender que ya no es de 500px
+                // A veces el CSS 100% no es suficiente para recalcular el Aspect Ratio (FOV)
+                UnityCanvas.style.width = "100%";
+                UnityCanvas.style.height = "100%";
+
+            } else {
+                // --- MODO FULLSCREEN DESACTIVADO ---
+                console.log("Saliendo de FullScreen");
+                isInFullScreen = false;
+
+                // 1. Avisamos a Unity
+                if(CurrentUnityInstance) {
+                    CurrentUnityInstance.SendMessage('FullScreenIconManager', 'SetSpriteByIndex', 0);
+                    CurrentUnityInstance.SendMessage('FullScreenManager', 'SetInFullScreenMode', 0);
+                }
+                
+                // 2. Restauramos el canvas al estado normal por si acaso
+                // (Aunque el CSS del contenedor .canvas-container se encarga de limitarlo a 500px)
+                UnityCanvas.style.width = "100%";
+                UnityCanvas.style.height = "100%";
+            }
+        });
+        </script>
+    </body>
+</html>
